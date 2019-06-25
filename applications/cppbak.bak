@@ -1,0 +1,97 @@
+#include <Wire.h>//调用Arduino自带库
+ 
+#define Register_ID 0 //器件ID 十六进制为0x00  十进制为0
+#define Register_2D 0x2D //省电特性控制
+#define Register_X0 0x32 //X轴数据0
+#define Register_X1 0x33 //X轴数据1
+#define Register_Y0 0x34 //Y轴数据0
+#define Register_Y1 0x35 //Y轴数据1
+#define Register_Z0 0x36 //Z轴数据0
+#define Register_Z1 0x37 //Z轴数据1
+ 
+//ADXL345寄存器映射地址
+ 
+int ADXAddress = 0xA7 >> 1;// 转换为7位从地址
+int reading = 0;
+int val=0;
+int X0,X1,X_out;
+int Y0,Y1,Y_out;
+int Z1,Z0,Z_out;
+double Xg,Yg,Zg;
+//定义变量
+ 
+ 
+void setup()
+{
+   Wire.begin(); //初始化I2C         
+   Serial.begin(9600);  //初始化串口
+   delay(100);
+   // enable to measute g data
+   Wire.beginTransmission(ADXAddress);//开启发送
+   Wire.write(Register_2D);//写入ADXL345寄存器映射地址
+   Wire.write(8);                //测量使能
+   Wire.endTransmission();     // 停止发送
+ 
+}
+ 
+void loop()
+{
+   //读取X轴数据
+   Wire.beginTransmission(ADXAddress); // 开启发送
+   Wire.write(Register_X0);//写入ADXL345寄存器映射地址
+   Wire.write(Register_X1);//写入ADXL345寄存器映射地址
+   Wire.endTransmission();//结束发送
+   Wire.requestFrom(ADXAddress,2); //请求 ADXL345 二个字节
+   if(Wire.available()<=2)   //获取<=2个数据
+   {
+     X0 = Wire.read();
+     X1 = Wire.read();
+     X1=X1<<8;
+     X_out=X0+X1;  
+   }
+  //读取Y轴数据↓
+   Wire.beginTransmission(ADXAddress); // 开启发送
+   Wire.write(Register_Y0);//写入ADXL345寄存器映射地址
+   Wire.write(Register_Y1);//写入ADXL345寄存器映射地址
+   Wire.endTransmission();//结束发送
+   Wire.requestFrom(ADXAddress,2); //请求ADXL345二个字节
+   if(Wire.available()<=2)   //获取<=2个数据
+   {
+     Y0 = Wire.read();
+     Y1 = Wire.read();
+     Y1=Y1<<8;
+     Y_out=Y0+Y1;
+   }
+   //读取Z轴数据
+   Wire.beginTransmission(ADXAddress); // 开启发送
+   Wire.write(Register_Z0);//写入ADXL345寄存器映射地址
+   Wire.write(Register_Z1);//写入ADXL345寄存器映射地址
+   Wire.endTransmission();//结束发送
+   Wire.requestFrom(ADXAddress,2); //请求ADXL345二个字节
+   if(Wire.available()<=2)   //获取<=2个数据
+   {
+     Z0 = Wire.read();
+     Z1 = Wire.read();
+     Z1=Z1<<8;
+     Z_out=Z0+Z1;
+   }
+   /*
+   Xg=X_out/256.0;
+   Yg=Y_out/256.0;
+   Zg=Z_out/256.0;
+   */
+    Xg=X_out; 
+    Yg=Y_out; 
+    Zg=Z_out; 
+   Serial.print("X= ");
+   Serial.print(Xg);
+   Serial.print("       ");
+   Serial.print("Y= ");
+   Serial.print(Yg);
+   Serial.print("       ");
+   Serial.print("Z= ");
+   Serial.print(Zg);
+   Serial.println("  ");
+   delay(200);
+   //串口输出
+}
