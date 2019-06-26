@@ -41,3 +41,10 @@
 #define ADXL345_Z_SCALE 0.004F
 #define ADXL345_Y_SCALE 0.00389F
 #define ADXL345_X_SCALE 0.003937F
+
+#define ADXL345_WRITE 	1
+#define ADXL345_READ  	0
+
+
+#endif
+

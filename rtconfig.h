@@ -143,6 +143,8 @@
 
 /* peripheral libraries and drivers */
 
+#define PKG_USING_ICM20608
+#define PKG_USING_ICM20608_LATEST_VERSION
 
 /* miscellaneous packages */
 
