@@ -335,9 +335,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER, RT_USING_ARM_LIBC, STM32F103xE</Define>
+              <Define>USE_HAL_DRIVER, STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>.;rt-thread\include;applications;.;drivers;Libraries\CMSIS\Device\ST\STM32F1xx\Include;Libraries\STM32F1xx_HAL_Driver\Inc;Libraries\CMSIS\Include;packages\icm20608-latest;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\finsh;rt-thread\components\libc\compilers\armlibc;rt-thread\components\libc\compilers\common</IncludePath>
+              <IncludePath>.;rt-thread\include;applications;.;drivers;Libraries\CMSIS\Device\ST\STM32F1xx\Include;Libraries\STM32F1xx_HAL_Driver\Inc;Libraries\CMSIS\Include;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\finsh;rt-thread\components\net\freemodbus\modbus\include;rt-thread\components\net\freemodbus\modbus\rtu;rt-thread\components\net\freemodbus\port</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -470,11 +470,6 @@
               <FileName>adxl345.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\adxl345.c</FilePath>
-            </File>
-            <File>
-              <FileName>adxl345_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\adxl345_app.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
@@ -804,16 +799,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>icm20608</GroupName>
-          <Files>
-            <File>
-              <FileName>icm20608.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\icm20608-latest\icm20608.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>cpu</GroupName>
           <Files>
             <File>
@@ -944,32 +929,82 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>libc</GroupName>
+          <GroupName>FreeModbus</GroupName>
           <Files>
             <File>
-              <FileName>libc.c</FileName>
+              <FileName>mbfuncdiag.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\libc.c</FilePath>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbfuncdiag.c</FilePath>
             </File>
             <File>
-              <FileName>mem_std.c</FileName>
+              <FileName>mbutils.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\mem_std.c</FilePath>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbutils.c</FilePath>
             </File>
             <File>
-              <FileName>stubs.c</FileName>
+              <FileName>mbfuncother.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\stubs.c</FilePath>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbfuncother.c</FilePath>
             </File>
             <File>
-              <FileName>time.c</FileName>
+              <FileName>mbcrc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\time.c</FilePath>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\rtu\mbcrc.c</FilePath>
             </File>
             <File>
-              <FileName>gmtime_r.c</FileName>
+              <FileName>port.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\gmtime_r.c</FilePath>
+              <FilePath>rt-thread\components\net\freemodbus\port\port.c</FilePath>
+            </File>
+            <File>
+              <FileName>mbfunccoils_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbfunccoils_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>mbfuncdisc_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbfuncdisc_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>mbfuncholding_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbfuncholding_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>mbfuncinput_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\functions\mbfuncinput_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>mbrtu_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\rtu\mbrtu_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>mb_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\modbus\mb_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>portevent_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\port\portevent_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>portserial_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\port\portserial_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>porttimer_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\port\porttimer_m.c</FilePath>
+            </File>
+            <File>
+              <FileName>user_mb_app_m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\net\freemodbus\port\user_mb_app_m.c</FilePath>
             </File>
           </Files>
         </Group>

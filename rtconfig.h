@@ -88,7 +88,6 @@
 
 /* POSIX layer and C standard library */
 
-#define RT_USING_LIBC
 
 /* Network */
 
@@ -100,6 +99,8 @@
 
 /* Modbus master and slave stack */
 
+#define RT_USING_MODBUS
+#define RT_MODBUS_MASTER_RTU
 
 /* AT commands */
 
@@ -143,8 +144,6 @@
 
 /* peripheral libraries and drivers */
 
-#define PKG_USING_ICM20608
-#define PKG_USING_ICM20608_LATEST_VERSION
 
 /* miscellaneous packages */
 
@@ -154,5 +153,6 @@
 #define STM32F103VE
 #define RT_HSE_VALUE 8000000
 #define RT_USING_UART1
+#define RT_USING_UART2
 
 #endif

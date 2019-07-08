@@ -1,13 +1,11 @@
 #include <rtdevice.h>
 #include "ADXL345.h"
 #include <math.h>
- 
-#define adxl345_I2C_BUS_NAME     "i2c1"  /* 传感器连接的I2C总线设备名称 */
+ #define adxl345_I2C_BUS_NAME     "i2c2"  /* 传感器连接的I2C总线设备名称 */
 
 static struct rt_i2c_bus_device *i2c_bus = RT_NULL;     /* I2C总线设备句柄 */
 static rt_uint8_t initialized = RT_FALSE;                /* 传感器初始化状态 */
  
-
 
 static rt_err_t adxl345_tfr(struct rt_i2c_bus_device *bus,rt_uint8_t wr, rt_uint8_t reg,rt_uint8_t len, rt_uint8_t *buf)
 {
@@ -68,7 +66,7 @@ void adxl345_init(const char *name)
     }
     else
     {
-			buf[0] = 0x00;
+			buf[0] = 0x6B;
 			adxl345_tfr(i2c_bus,ADXL345_WRITE,ADXL345_DATA_FORMAT, 1,buf);//测量范围,正负16g，13位模式
 			
 			buf[0] = 0x0a;
@@ -77,12 +75,8 @@ void adxl345_init(const char *name)
 			buf[0] = 0x08;
 			adxl345_tfr(i2c_bus,ADXL345_WRITE,ADXL345_POWER_CTL, 1,buf);  //选择电源模式   参考pdf24页
 			
-			
-			//adxl345_tfr(ADXL345_INT_ENABLE, 0x80); // DATA_READY 中断
 			buf[0] = 0;
 			adxl345_tfr(i2c_bus,ADXL345_WRITE,ADXL345_INT_ENABLE,1,buf); // DATA_READY 中断
-			
-			buf[0] = 0;
 			adxl345_tfr(i2c_bus,ADXL345_WRITE,ADXL345_OFSX,1,buf);       //X 偏移量 根据测试传感器的状态写入pdf29页
 			adxl345_tfr(i2c_bus,ADXL345_WRITE,ADXL345_OFSY,1,buf);       //Y 偏移量 根据测试传感器的状态写入pdf29页
 			adxl345_tfr(i2c_bus,ADXL345_WRITE,ADXL345_OFSZ,1,buf);       //Z 偏移量 根据测试传感器的状态写入pdf29页
@@ -91,6 +85,53 @@ void adxl345_init(const char *name)
 		}
 }
  
+static 	void  ADXL345_read_average(rt_int16_t *x,rt_int16_t *y,rt_int16_t *z)
+{
+	rt_uint8_t buf[6];
+	rt_uint32_t i;
+	rt_int16_t xt=0,yt=0,zt=0;
+	
+		for(i=0;i<4;i++)
+		{
+			adxl345_tfr(i2c_bus,ADXL345_READ,ADXL345_DATAX0, 6,buf);
+			
+			xt += (rt_int16_t)((buf[1]<<8)+buf[0]);
+			yt += (rt_int16_t)((buf[3]<<8)+buf[2]);
+			zt += (rt_int16_t)((buf[5]<<8)+buf[4]);	
+		
+		}
+		
+		xt>>=2;
+		yt>>=2;
+		zt>>=2;
+	
+		*x = xt;
+		*y = yt;
+		*z = zt;	
+}	
+			
+
+static rt_int16_t ADXL345_Get_Angle(float x,float y,float z,rt_uint8_t dir)
+{
+    float temp;
+    float res=0;
+    switch(dir)
+    {
+    case 0://与自然Z轴的角度
+        temp=sqrt((x*x+y*y))/z;
+        res=atan(temp);
+        break;
+    case 1://与自然X轴的角度
+        temp=x/sqrt((y*y+z*z));
+        res=atan(temp);
+        break;
+    case 2://与自然Y轴的角度
+        temp=y/sqrt((x*x+z*z));
+        res=atan(temp);
+        break;
+    }
+    return res*1800/3.14;
+}
 
 
 static void i2c_sensor_sample(int argc, char *argv[])
@@ -98,6 +139,7 @@ static void i2c_sensor_sample(int argc, char *argv[])
  //   float humidity, temperature;
     char name[RT_NAME_MAX];
 	rt_uint8_t buf[6];
+	rt_int16_t x,y,z;
 
   //  humidity = 0.0;
   //  temperature = 0.0;
@@ -122,8 +164,13 @@ static void i2c_sensor_sample(int argc, char *argv[])
     {
 			
 			adxl345_tfr(i2c_bus,ADXL345_READ,ADXL345_DATAX0, 6,buf);
-			rt_kprintf(" data is %x %x %x %x %x %x\n",buf[0],buf[1],buf[2],buf[3],buf[4],buf[5]);
 			
+			ADXL345_read_average(&x,&y,&z);
+			
+			rt_kprintf(" data is %d.%d \n",ADXL345_Get_Angle(x,y,z,0)/10,ADXL345_Get_Angle(x,y,z,0)%10);
+			rt_kprintf(" data is %d.%d \n",ADXL345_Get_Angle(x,y,z,1)/10,ADXL345_Get_Angle(x,y,z,1)%10);
+			rt_kprintf(" data is %d.%d \n",ADXL345_Get_Angle(x,y,z,2)/10,ADXL345_Get_Angle(x,y,z,2)%10);
+
         /* 读取温湿度数据 */
      //   ADXL345_read(&temperature, &humidity);
 
